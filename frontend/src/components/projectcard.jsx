@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
+
 function ProjectCard({ project }) {
-  const { name, category, state, agency, status, percentComplete, budget } = project;
+  const { id, name, category, state, agency, status, percentComplete, budget } = project;
 
   const statusColors = {
     PLANNED: '#94a3b8',
@@ -9,24 +11,26 @@ function ProjectCard({ project }) {
   };
 
   return (
-    <div style={styles.card}>
-      <div style={styles.header}>
-        <h3 style={styles.name}>{name}</h3>
-        <span style={{ ...styles.badge, backgroundColor: statusColors[status] }}>
-          {status}
-        </span>
+    <Link to={`/projects/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+      <div style={styles.card}>
+        <div style={styles.header}>
+          <h3 style={styles.name}>{name}</h3>
+          <span style={{ ...styles.badge, backgroundColor: statusColors[status] }}>
+            {status}
+          </span>
+        </div>
+        <p style={styles.meta}>{category} · {state} · {agency}</p>
+        <div style={styles.progressBarOuter}>
+          <div style={{ ...styles.progressBarInner, width: `${percentComplete}%` }} />
+        </div>
+        <p style={styles.meta}>{percentComplete}% complete</p>
+        {budget && (
+          <p style={styles.budget}>
+            ₹{(budget.sanctionedAmount / 10000000).toFixed(1)} Cr sanctioned
+          </p>
+        )}
       </div>
-      <p style={styles.meta}>{category} · {state} · {agency}</p>
-      <div style={styles.progressBarOuter}>
-        <div style={{ ...styles.progressBarInner, width: `${percentComplete}%` }} />
-      </div>
-      <p style={styles.meta}>{percentComplete}% complete</p>
-      {budget && (
-        <p style={styles.budget}>
-          ₹{(budget.sanctionedAmount / 10000000).toFixed(1)} Cr sanctioned
-        </p>
-      )}
-    </div>
+    </Link>
   );
 }
 
@@ -37,6 +41,7 @@ const styles = {
     padding: '16px',
     marginBottom: '12px',
     backgroundColor: '#fff',
+    cursor: 'pointer',
   },
   header: {
     display: 'flex',

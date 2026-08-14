@@ -18,3 +18,21 @@ export async function getProject(id) {
   }
   return res.json();
 }
+// Creates a new project - requires a valid token (only GOVT_EMPLOYEE/ADMIN allowed)
+export async function createProject(projectData, token) {
+  const res = await fetch(`${API_BASE}/projects`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(projectData),
+  });
+
+  if (!res.ok) {
+    const errData = await res.json();
+    throw new Error(errData.error || 'Failed to create project');
+  }
+
+  return res.json();
+}
