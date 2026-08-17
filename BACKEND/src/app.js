@@ -5,6 +5,7 @@ const errorHandler = require('./middleware/errorHandler');
 
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects');
+const progressRoutes = require('./routes/progressUpdates');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/progress-updates', progressRoutes);
 
 // 404 for anything unmatched
 app.use((req, res) => {
