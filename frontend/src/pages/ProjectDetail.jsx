@@ -1,12 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getProject } from '../api/projects';
+import ProgressUpdateForm from '../components/ProgressUpdateForm';
 
-function ProjectDetail() {
+function ProjectDetail({ token, user }) {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  function loadProject() {
+    setLoading(true);
+    getProject(id)
+      .then((data) => {
+        setProject(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }
 
   useEffect(() => {
     let ignore = false;
@@ -34,7 +48,10 @@ function ProjectDetail() {
   if (error) return <p style={{ padding: '20px', color: 'red' }}>Error: {error}</p>;
   if (!project) return null;
 
-  const { name, category, state, district, agency, status, percentComplete, budget, milestones, sources, editLogs } = project;
+  const { name, category, state, district, agency, status, percentComplete, budget, milestones, sources, editLogs, contractor } = project;
+
+  // Show the form only if logged-in user is a CONTRACTOR and matches this project's assigned contractor
+  const isAssignedContractor = user && user.role === 'CONTRACTOR' && project.contractorId === user.id;
 
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto', padding: '20px' }}>
@@ -42,6 +59,7 @@ function ProjectDetail() {
       <h1>{name}</h1>
       <p style={{ color: '#64748b' }}>{category} · {state}{district ? `, ${district}` : ''} · {agency}</p>
       <p><strong>Status:</strong> {status} ({percentComplete}% complete)</p>
+      {contractor && <p><strong>Contractor:</strong> {contractor.name}</p>}
 
       {budget && (
         <div style={{ margin: '20px 0', padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
@@ -85,6 +103,10 @@ function ProjectDetail() {
             ))}
           </ul>
         </div>
+      )}
+
+      {isAssignedContractor && (
+        <ProgressUpdateForm projectId={id} token={token} onSubmitted={loadProject} />
       )}
     </div>
   );

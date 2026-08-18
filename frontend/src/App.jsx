@@ -4,6 +4,7 @@ import ProjectList from './pages/ProjectList';
 import ProjectDetail from './pages/ProjectDetail';
 import Login from './pages/Login';
 import AddProject from './pages/AddProject';
+import ApprovalQueue from './pages/ApprovalQueue';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -33,6 +34,7 @@ function App() {
   }
 
   const canAddProject = user && (user.role === 'GOVT_EMPLOYEE' || user.role === 'ADMIN');
+  const canReview = user && (user.role === 'GOVT_EMPLOYEE' || user.role === 'ADMIN');
 
   return (
     <div>
@@ -41,6 +43,9 @@ function App() {
         <div>
           {canAddProject && (
             <Link to="/add-project" style={{ marginRight: '16px' }}>+ Add Project</Link>
+          )}
+          {canReview && (
+            <Link to="/approval-queue" style={{ marginRight: '16px' }}>Approval Queue</Link>
           )}
           {user ? (
             <span>
@@ -55,9 +60,10 @@ function App() {
 
       <Routes>
         <Route path="/" element={<ProjectList />} />
-        <Route path="/projects/:id" element={<ProjectDetail />} />
+        <Route path="/projects/:id" element={<ProjectDetail token={token} user={user} />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/add-project" element={<AddProject token={token} user={user} />} />
+        <Route path="/approval-queue" element={<ApprovalQueue token={token} user={user} />} />
       </Routes>
     </div>
   );
