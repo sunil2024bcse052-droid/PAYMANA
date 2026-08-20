@@ -5,6 +5,7 @@ import ProjectDetail from './pages/ProjectDetail';
 import Login from './pages/Login';
 import AddProject from './pages/AddProject';
 import ApprovalQueue from './pages/ApprovalQueue';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,9 +39,10 @@ function App() {
 
   return (
     <div>
-      <nav style={{ padding: '12px 20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <nav style={{ padding: '12px 20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
         <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}><strong>Paimana</strong></Link>
         <div>
+          <Link to="/dashboard" style={{ marginRight: '16px' }}>Dashboard</Link>
           {canAddProject && (
             <Link to="/add-project" style={{ marginRight: '16px' }}>+ Add Project</Link>
           )}
@@ -60,6 +62,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<ProjectList />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/projects/:id" element={<ProjectDetail token={token} user={user} />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/add-project" element={<AddProject token={token} user={user} />} />

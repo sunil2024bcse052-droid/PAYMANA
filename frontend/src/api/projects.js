@@ -18,6 +18,7 @@ export async function getProject(id) {
   }
   return res.json();
 }
+
 // Creates a new project - requires a valid token (only GOVT_EMPLOYEE/ADMIN allowed)
 export async function createProject(projectData, token) {
   const res = await fetch(`${API_BASE}/projects`, {
@@ -34,5 +35,14 @@ export async function createProject(projectData, token) {
     throw new Error(errData.error || 'Failed to create project');
   }
 
+  return res.json();
+}
+
+// Fetches summary stats - total budget, delayed count, counts by status
+export async function getStats() {
+  const res = await fetch(`${API_BASE}/projects/stats/summary`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch stats');
+  }
   return res.json();
 }
