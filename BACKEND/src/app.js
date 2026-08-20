@@ -11,6 +11,7 @@ const app = express();
 
 app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
 app.use(express.json());
+app.use('/uploads', express.static(require('path').join(__dirname, '../uploads')));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });

@@ -117,5 +117,16 @@ async function reviewUpdate(req, res, next) {
     next(err);
   }
 }
+// POST /api/progress-updates/upload-proof
+// Contractor uploads a proof photo, gets back a URL to include when
+// submitting the actual progress update.
+function uploadProof(req, res) {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  // Build a URL the frontend can use to display/link the image
+  const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+  res.status(201).json({ url: fileUrl });
+}
 
-module.exports = { submitUpdate, listPending, reviewUpdate };
+module.exports = { submitUpdate, listPending, reviewUpdate, uploadProof };

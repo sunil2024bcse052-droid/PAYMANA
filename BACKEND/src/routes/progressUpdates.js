@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { requireAuth, requireRole } = require('../middleware/auth');
-const { submitUpdate, listPending, reviewUpdate } = require('../controllers/progressController');
+const upload = require('../middleware/upload');
+const { submitUpdate, listPending, reviewUpdate, uploadProof } = require('../controllers/progressController');
+
+// Contractor uploads a proof photo (before submitting the update itself)
+router.post('/upload-proof', requireAuth, requireRole('CONTRACTOR'), upload.single('photo'), uploadProof);
 
 // Contractor submits a progress update
 router.post('/', requireAuth, requireRole('CONTRACTOR'), submitUpdate);
