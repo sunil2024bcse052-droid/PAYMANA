@@ -9,12 +9,14 @@ datasource db {
 
 // ---------- USERS ----------
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role     @default(VIEWER)
-  createdAt DateTime @default(now())
+  id            String     @id @default(uuid())
+  email         String     @unique
+  password      String
+  name          String
+  role          Role       @default(VIEWER)
+  requestedRole Role?      // what they asked for, if pending approval
+  status        UserStatus @default(ACTIVE)
+  createdAt     DateTime   @default(now())
 
   registeredProjects Project[]        @relation("RegisteredBy")
   contractedProjects Project[]        @relation("ContractedTo")
@@ -28,6 +30,12 @@ enum Role {
   GOVT_EMPLOYEE
   CONTRACTOR
   VIEWER
+}
+
+enum UserStatus {
+  ACTIVE
+  PENDING
+  REJECTED
 }
 
 // ---------- PROJECTS ----------

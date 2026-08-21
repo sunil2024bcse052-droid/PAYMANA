@@ -1,10 +1,10 @@
 const prisma = require('../utils/prisma');
 
-// GET /api/projects?state=&category=&status=&search=&page=1&limit=20
+// GET /api/projects?state=&category=&status=&search=&contractorId=&page=1&limit=20
 // Public route - no auth required. Only returns fields safe for public view.
 async function listProjects(req, res, next) {
   try {
-    const { state, category, status, search } = req.query;
+    const { state, category, status, search, contractorId } = req.query;
     const page = Math.max(parseInt(req.query.page) || 1, 1);
     const limit = Math.min(parseInt(req.query.limit) || 20, 100);
 
@@ -12,6 +12,7 @@ async function listProjects(req, res, next) {
     if (state) where.state = state;
     if (category) where.category = category.toUpperCase();
     if (status) where.status = status.toUpperCase();
+    if (contractorId) where.contractorId = contractorId;
     if (search) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
@@ -113,7 +114,7 @@ async function createProject(req, res, next) {
       });
 
       return created;
-    });
+    }, { timeout: 15000 });
 
     res.status(201).json(project);
   } catch (err) {
@@ -147,7 +148,6 @@ async function updateProject(req, res, next) {
       }
     }
 
-    // Budget fields live on a related table, handled separately
     const budgetFields = ['releasedAmount', 'utilizedAmount'];
     const budgetUpdate = {};
     for (const field of budgetFields) {
@@ -169,7 +169,7 @@ async function updateProject(req, res, next) {
       });
 
       return proj;
-    });
+    }, { timeout: 15000 });
 
     res.json(updated);
   } catch (err) {

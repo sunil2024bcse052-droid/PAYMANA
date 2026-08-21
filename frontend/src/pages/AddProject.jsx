@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createProject } from '../api/projects';
+import { getContractors } from '../api/auth';
 
 function AddProject({ token, user }) {
   const navigate = useNavigate();
@@ -14,12 +15,24 @@ function AddProject({ token, user }) {
     fundingSource: 'central',
     startDate: '',
     plannedDeadline: '',
+    contractorId: '',
   });
+  const [contractors, setContractors] = useState([]);
+  const [contractorsError, setContractorsError] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const canView = user && (user.role === 'GOVT_EMPLOYEE' || user.role === 'ADMIN');
+
+  useEffect(() => {
+    if (!canView || !token) return;
+    getContractors(token)
+      .then(setContractors)
+      .catch((err) => setContractorsError(err.message));
+  }, [canView, token]);
+
   // Only GOVT_EMPLOYEE or ADMIN should even see this form
-  if (!user || (user.role !== 'GOVT_EMPLOYEE' && user.role !== 'ADMIN')) {
+  if (!canView) {
     return (
       <div style={{ padding: '20px' }}>
         <p>You don't have permission to view this page. Please log in as a government employee.</p>
@@ -38,7 +51,11 @@ function AddProject({ token, user }) {
 
     try {
       const created = await createProject(
-        { ...form, sanctionedAmount: parseFloat(form.sanctionedAmount) },
+        {
+          ...form,
+          sanctionedAmount: parseFloat(form.sanctionedAmount),
+          contractorId: form.contractorId || null,
+        },
         token
       );
       navigate(`/projects/${created.id}`);
@@ -82,6 +99,28 @@ function AddProject({ token, user }) {
             <option value="loan">Loan</option>
             <option value="PPP">PPP</option>
           </select>
+        </div>
+
+        <div style={{ marginBottom: '12px' }}>
+          <label style={labelStyle}>Assign Contractor (optional — can assign later)</label>
+          <select name="contractorId" value={form.contractorId} onChange={handleChange} style={inputStyle}>
+            <option value="">No contractor assigned yet</option>
+            {contractors.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name} ({c.email})
+              </option>
+            ))}
+          </select>
+          {contractorsError && (
+            <p style={{ color: '#ef4444', fontSize: '12.5px', margin: '4px 0 0 0' }}>
+              Couldn't load contractors: {contractorsError}
+            </p>
+          )}
+          {!contractorsError && contractors.length === 0 && (
+            <p style={{ color: '#94a3b8', fontSize: '12.5px', margin: '4px 0 0 0' }}>
+              No registered contractors yet. Approve one via Pending Requests, or create one via Manage Users.
+            </p>
+          )}
         </div>
 
         <Field label="Start Date" name="startDate" type="date" value={form.startDate} onChange={handleChange} />

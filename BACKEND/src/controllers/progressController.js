@@ -13,7 +13,6 @@ async function submitUpdate(req, res, next) {
       });
     }
 
-    // Confirm this contractor is actually assigned to this project
     const project = await prisma.project.findUnique({ where: { id: projectId } });
     if (!project) return res.status(404).json({ error: 'Project not found' });
     if (project.contractorId !== req.user.id) {
@@ -61,7 +60,7 @@ async function listPending(req, res, next) {
 async function reviewUpdate(req, res, next) {
   try {
     const { id } = req.params;
-    const { decision, reviewNotes } = req.body; // decision: "APPROVED" or "REJECTED"
+    const { decision, reviewNotes } = req.body;
 
     if (!['APPROVED', 'REJECTED'].includes(decision)) {
       return res.status(400).json({ error: 'decision must be APPROVED or REJECTED' });
@@ -85,7 +84,6 @@ async function reviewUpdate(req, res, next) {
       });
 
       if (decision === 'APPROVED') {
-        // Push the approved numbers into the real, public-facing project data
         await tx.project.update({
           where: { id: update.projectId },
           data: { percentComplete: update.percentComplete },
@@ -110,13 +108,14 @@ async function reviewUpdate(req, res, next) {
       }
 
       return reviewed;
-    });
+    }, { timeout: 15000 });
 
     res.json(result);
   } catch (err) {
     next(err);
   }
 }
+
 // POST /api/progress-updates/upload-proof
 // Contractor uploads a proof photo, gets back a URL to include when
 // submitting the actual progress update.
@@ -124,7 +123,6 @@ function uploadProof(req, res) {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
-  // Build a URL the frontend can use to display/link the image
   const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
   res.status(201).json({ url: fileUrl });
 }

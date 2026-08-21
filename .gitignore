@@ -2,3 +2,10 @@ test-login.json
 test-progress.json
 test-login-employee.json
 *.json.bak
+node_modules/
+.env
+dist/
+*.log
+uploads/
+error-log.txt
+test-*.json

@@ -50,3 +50,25 @@ export async function reviewProgressUpdate(id, decision, reviewNotes, token) {
 
   return res.json();
 }
+// Uploads a proof photo, returns { url }
+export async function uploadProofPhoto(file, token) {
+  const formData = new FormData();
+  formData.append('photo', file);
+
+  const res = await fetch(`${API_BASE}/progress-updates/upload-proof`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      // Note: no Content-Type header here - the browser sets it automatically
+      // for FormData, including the required boundary string.
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errData = await res.json();
+    throw new Error(errData.error || 'Failed to upload photo');
+  }
+
+  return res.json();
+}
