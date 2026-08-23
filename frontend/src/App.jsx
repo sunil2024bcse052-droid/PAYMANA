@@ -40,24 +40,24 @@ function App() {
 
   return (
     <div>
-      <nav style={{ padding: '12px 20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}><strong>Paimana</strong></Link>
-        <div>
-          <Link to="/map" style={{ marginRight: '16px' }}>Map</Link>
-          <Link to="/dashboard" style={{ marginRight: '16px' }}>Dashboard</Link>
+      <nav style={styles.nav}>
+        <Link to="/" style={styles.brand}>Paimana</Link>
+        <div style={styles.navLinks}>
+          <Link to="/map" style={styles.navLink}>Map</Link>
+          <Link to="/dashboard" style={styles.navLink}>Dashboard</Link>
           {canAddProject && (
-            <Link to="/add-project" style={{ marginRight: '16px' }}>+ Add Project</Link>
+            <Link to="/add-project" style={{ ...styles.navLink, color: 'var(--color-accent)' }}>+ Add Project</Link>
           )}
           {canReview && (
-            <Link to="/approval-queue" style={{ marginRight: '16px' }}>Approval Queue</Link>
+            <Link to="/approval-queue" style={styles.navLink}>Approval Queue</Link>
           )}
           {user ? (
-            <span>
-              Logged in as {user.name} ({user.role}){' '}
-              <button onClick={handleLogout}>Logout</button>
+            <span style={styles.userInfo}>
+              {user.name} <span style={styles.roleTag}>{user.role}</span>{' '}
+              <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
             </span>
           ) : (
-            <Link to="/login">Login</Link>
+            <Link to="/login" style={styles.navLink}>Login</Link>
           )}
         </div>
       </nav>
@@ -74,5 +74,56 @@ function App() {
     </div>
   );
 }
+
+const styles = {
+  nav: {
+    backgroundColor: 'var(--color-ink)',
+    padding: '14px 24px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: '12px',
+  },
+  brand: {
+    fontFamily: 'var(--font-display)',
+    fontSize: '20px',
+    fontWeight: 700,
+    color: 'var(--color-paper)',
+    textDecoration: 'none',
+    letterSpacing: '0.01em',
+  },
+  navLinks: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '20px',
+    fontFamily: 'var(--font-body)',
+    fontSize: '13px',
+  },
+  navLink: {
+    color: 'var(--color-paper)',
+    opacity: 0.85,
+    textDecoration: 'none',
+  },
+  userInfo: {
+    color: 'var(--color-paper)',
+    opacity: 0.85,
+  },
+  roleTag: {
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    padding: '2px 8px',
+    borderRadius: '2px 8px 2px 8px',
+    fontSize: '11px',
+    fontWeight: 600,
+  },
+  logoutBtn: {
+    backgroundColor: 'transparent',
+    border: '1px solid rgba(255,255,255,0.3)',
+    color: 'var(--color-paper)',
+    borderRadius: '4px',
+    padding: '4px 10px',
+    fontSize: '12px',
+  },
+};
 
 export default App;
