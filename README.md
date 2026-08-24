@@ -72,10 +72,8 @@ ACCOUNTABILITY
 ---
 
 ## Screenshots
+<img width="1043" height="859" alt="image" src="https://github.com/user-attachments/assets/682e10a0-bfb9-43e3-b289-e840e3c8c9f1" />
 
-<!-- Add screenshots here once the live deployment is fully confirmed working.
-     Suggested shots: homepage/hero, project list with filters, project detail page,
-     dashboard, map view, approval queue. Example markdown:
 
 ![Homepage](./screenshots/homepage.png)
 ![Project List](./screenshots/project-list.png)
