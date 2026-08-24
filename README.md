@@ -72,7 +72,9 @@ ACCOUNTABILITY
 ---
 
 ## Screenshots
-<img width="1043" height="859" alt="image" src="https://github.com/user-attachments/assets/682e10a0-bfb9-43e3-b289-e840e3c8c9f1" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/682e10a0-bfb9-43e3-b289-e840e3c8c9f1" />
+<img width="500" height="300" alt="Screenshot 2026-08-24 144043" src="https://github.com/user-attachments/assets/7ca33090-1e88-4509-b8b9-638cf89a37a8" />
+<img width="500" height="300" alt="Screenshot 2026-08-24 144043" src="https://github.com/user-attachments/assets/4fd9704b-d4e7-4bf8-8111-9c6af30059db" />
 
 
 ![Homepage](./screenshots/homepage.png)
